@@ -65,11 +65,50 @@ const nucleo = new THREE.Mesh(nucleoGeometry, nucleoMaterial);
 nucleo.scale.set(1.5, 1.5, 1.5);
 scene.add(nucleo);
 
+// raio e numero de segmentos do elétron
+const eletronGeometry = new THREE.SphereGeometry(0.5, 32, 32);
+
+// Primeiro elétron
+// orbit é a órbita invisível (objeto vazio), o 'eixo' onde o elétron 
+// e sua trajetória (visível) são definidos
+const orbit1 = new THREE.Object3D();
+scene.add(orbit1);
+const eletronMaterial1 = new THREE.MeshStandardMaterial({color: 0x0000ff, metalness: 0.5, roughness: 0.1});
+const eletron1 = new THREE.Mesh(eletronGeometry, eletronMaterial1);
+eletron1.scale.set(1.0, 1.0, 1.0);
+orbit1.add(eletron1);
+
+// Órbita do elétron 1
+const caminhoMaterial1 = new THREE.MeshBasicMaterial({color: 0x0000ff, side: THREE.DoubleSide});
+const caminhoGeometry1 = new THREE.TorusGeometry(8, 0.01, 16, 100);
+const caminho1 = new THREE.Mesh(caminhoGeometry1, caminhoMaterial1);
+orbit1.add(caminho1);
+
 // Câmera cima
 const topCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 topCamera.position.set(0, 20, 0);
 topCamera.lookAt(nucleo.position);
 scene.add(topCamera);
+
+// Câmera diagonal
+const diagCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+diagCamera.position.set(12, 12, 12); // Posição estática
+diagCamera.lookAt(nucleo.position); // Apontando para o núcleo
+scene.add(diagCamera);
+
+let cameraAtual = topCamera;
+
+// Troca de câmera com o teclado
+window.addEventListener('keydown', (event) => {
+    if (event.key.toLowerCase() === 't' || event.key === 'Tab') {
+        event.preventDefault();
+        if (cameraAtual === diagCamera) {
+            cameraAtual = topCamera
+        } else {
+            cameraAtual = diagCamera
+        }
+    }
+});
 
 function animate() {
     requestAnimationFrame(animate);
@@ -77,7 +116,13 @@ function animate() {
     const elapsedTime = clock.getElapsedTime();
     nucleoMaterial.uniforms.uTime.value = elapsedTime;
 
-    renderer.render(scene, topCamera);
+    // Elétron 1 na vertical, se move nos eixos X e Y
+    const orbitRadius1 = 8;
+    const speed1 = 2.0;
+    eletron1.position.x = Math.cos(elapsedTime * speed1) * orbitRadius1;
+    eletron1.position.y = Math.sin(elapsedTime * speed1) * orbitRadius1;
+
+    renderer.render(scene, cameraAtual);
 }
 
 animate();
