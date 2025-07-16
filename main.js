@@ -84,6 +84,24 @@ const caminhoGeometry1 = new THREE.TorusGeometry(8, 0.01, 16, 100);
 const caminho1 = new THREE.Mesh(caminhoGeometry1, caminhoMaterial1);
 orbit1.add(caminho1);
 
+// Segundo elétron
+const orbit2 = new THREE.Object3D();
+scene.add(orbit2);
+const textureLoader = new THREE.TextureLoader();
+const eletronTexture = textureLoader.load('eletron.jpg');
+const eletronMaterial2 = new THREE.MeshStandardMaterial({map: eletronTexture, metalness: 0.2, roughness: 0.8});
+const eletron2 = new THREE.Mesh(eletronGeometry, eletronMaterial2);
+eletron2.scale.set(1.2, 1.2, 1.2);
+orbit2.add(eletron2);
+
+// Órbita do elétron 2
+const caminhoMaterial2 = new THREE.MeshBasicMaterial({color: 0xff0000, side: THREE.DoubleSide});
+const caminhoGeometry2 = new THREE.TorusGeometry(12, 0.01, 16, 100);
+const caminho2 = new THREE.Mesh(caminhoGeometry2, caminhoMaterial2);
+// mudando orientação do caminho
+caminho2.rotation.x = Math.PI / 2;
+orbit2.add(caminho2);
+
 // Câmera cima
 const topCamera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 topCamera.position.set(0, 20, 0);
@@ -121,6 +139,12 @@ function animate() {
     const speed1 = 2.0;
     eletron1.position.x = Math.cos(elapsedTime * speed1) * orbitRadius1;
     eletron1.position.y = Math.sin(elapsedTime * speed1) * orbitRadius1;
+
+    // Elétron 2 na horizontal, se move nos eixos X e Z
+    const orbitRadius2 = 12;
+    const speed2 = 1.4;
+    eletron2.position.x = Math.cos(elapsedTime * speed2) * orbitRadius2;
+    eletron2.position.z = Math.sin(elapsedTime * speed2) * orbitRadius2;
 
     renderer.render(scene, cameraAtual);
 }
