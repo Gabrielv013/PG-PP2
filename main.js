@@ -88,7 +88,7 @@ orbit1.add(caminho1);
 const orbit2 = new THREE.Object3D();
 scene.add(orbit2);
 const textureLoader = new THREE.TextureLoader();
-const eletronTexture = textureLoader.load('eletron.jpg');
+const eletronTexture = textureLoader.load('./eletron.jpg');
 const eletronMaterial2 = new THREE.MeshStandardMaterial({map: eletronTexture, metalness: 0.2, roughness: 0.8});
 const eletron2 = new THREE.Mesh(eletronGeometry, eletronMaterial2);
 eletron2.scale.set(1.2, 1.2, 1.2);
